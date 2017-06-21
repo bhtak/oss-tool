@@ -1,0 +1,4 @@
+# name, path, argument, group
+{ "proc": {"telegraf" : ["~/a.out", "", "T"],
+					"dismc" : []}
+}
