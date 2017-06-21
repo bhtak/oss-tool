@@ -1,0 +1,4 @@
+#!/bin/bash
+PKG=~/oss-tool/node/dismc/dismc.js
+
+node $PKG $*

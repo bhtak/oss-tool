@@ -1,0 +1,19 @@
+#!/bin/bash
+DIR="HOME HOME/conf HOME/bin HOME/lib"
+PKG="oss-tool"
+
+for d in $DIR
+do
+	if [ ! -d $HOME/$d ]; then
+		mkdir $HOME/$d
+	fi
+done
+
+# link essential tools
+TOOL="dismc startmc stopmc"
+for t in $TOOL
+do
+	echo "Link $t"
+	rm -f $HOME/HOME/bin/$t
+	ln -s $HOME/$PKG/script/$t $HOME/HOME/bin/$t
+done
