@@ -4,17 +4,15 @@ var ps = require('/usr/local/bin/node_modules/ps-node');
 var exec = require('child_process').exec;
 var map = require('./mapping.js')
 
-function* getProcessesList(){
-  var s = null;
+function getProcessesList(){
   for(let m in map){
-    s = yield getStatus(map[m].cmd);
+    getStatus(m, map[m].cmd);
   }
-  return s;
 }
 
-var iterator = getProcessesList();
+getProcessesList();
 
-function getStatus(cmd){
+function getStatus(nm, cmd){
   var param = {};
   ps.lookup({command:cmd}, function(err, resultList){
     var param = {};
@@ -34,22 +32,21 @@ function getStatus(cmd){
         exec("ps -p "+process.pid.toString()+" -o start -f | grep -v START | awk '{print $1}'", function(err, stdout, stderr){
           if(err) param.stime = '-';
           else param.stime = stdout;
-          printProcesses(param);
+          printProcesses(nm, param);
         });
       });
     } else {
       param.pid = '-';
       param.cmd = cmd;
       param.status = 'DEAD';
-      param.usage.cpu = '-';
-      param.usage.mem = '-';
+      param.cpu = '-';
+      param.mem = '-';
       param.stime = '-';
-      printProcesses(param);
+      printProcesses(nm, param);
     }
   });
 }
 
-function printProcesses(p){
-  console.log(p);
-  iterator.next();
+function printProcesses(cmd, p){
+  console.log(cmd, p.pid, p.status, p.cpu, p.mem, p.stime);
 }
