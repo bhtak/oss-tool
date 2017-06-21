@@ -1,4 +1,4 @@
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var sprintf = require('sprintf-js').sprintf;
 var totalmem = require('os').totalmem();
 var conf = require('./conf')
@@ -13,11 +13,15 @@ conf.readConf( arg, function(conf) {
 	// conf : ~/HOME/conf/proc.json에서 읽은 설정 파일 
 	//
 	if ( arg.hasOwnProperty('b')) {
-		if ( conf['proc'].hasOwnProperty( arg['b'])) {
-			console.log( "Start process : " + arg['b']);
+		var name = arg['b'];
+		if ( conf['proc'].hasOwnProperty( name)) {
+			var cmd = conf['proc'][name][0];
+			if ( cmd.substr(0,1) == "~") cmd = process.env.HOME + cmd.substr(1);
+
+			console.log( cmd);
 		}
 		else {
-			console.log( "Configuration not found for " + arg['b']);
+			console.log( "Error: Configuration not found for " + arg['b']);
 		}
 	}
 	
