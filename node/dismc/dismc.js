@@ -32,8 +32,8 @@ function match( conf, proc)
 
 function filter(conf, proc) 
 {
-	const fmt = '%-8d %-20s  %2.1f  %2.1f  %s';
-	console.log( sprintf( "%-8s %-20s %4s %4s  %-s", "PID", "Name", "CPU", "MEM", "Start"));
+	const fmt = '%-8d %-8s %-20s  %2.1f  %2.1f  %s';
+	console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
 	var info = {};
 
@@ -42,15 +42,20 @@ function filter(conf, proc)
 		if ( procName !== false) info[procName] = proc[i];
 	}
 	
+	var alive = 0, dead = 0;
+
 	for( var m in conf['proc']) {
 		if ( info.hasOwnProperty( m)) {
 			var proc = info[m];
-			console.log( sprintf( fmt, proc.pid, m, proc.cpu, proc.mem, proc.start));
+			console.log( sprintf( fmt, proc.pid, proc.user, m, proc.cpu, proc.mem, proc.start));
+			alive ++;
 		}
 		else {
-			console.log( sprintf( "%-8s %-20s", "-", m));
+			console.log( sprintf( "%-8s %-8s %-20s", "-", "-", m));
+			dead ++;
 		}
 	}
+	console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
 }
 
 function ps_list( callback) 
