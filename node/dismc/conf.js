@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 var defaultConf = {
-	"conf" : process.env.HOME + '/HOME/conf/proc.json'
+	"conf" : process.env.HOME + '/HOME/conf/proc.json',
 };
 
 /**

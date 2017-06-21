@@ -1,4 +1,10 @@
 #!/bin/bash
 PKG=~/oss-tool/node/dismc/startmc.js
 
-node $PKG $*
+CMD=`node $PKG $*`
+if [[ $CMD == "Error:"* ]]; then
+	echo $CMD
+else
+	echo "Run: " $CMD
+	$CMD >> /dev/null 2>&1 &
+fi
