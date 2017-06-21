@@ -1,55 +1,27 @@
 var exec = require('child_process').exec;
-var fs = require('fs');
-var util = require('util');
 var sprintf = require('sprintf-js').sprintf;
 var totalmem = require('os').totalmem();
+var conf = require('./conf')
 
-function check_argv( argv, defaultConfig)
-{
-	var options = defaultConfig || {};
-	for( var i=0; i< argv.length; i++) {
-		if ( argv[i].substr(0,2) == '--') {
-			var opt = argv[i].substr(2).split('=');
-			options[opt[0]] = opt[1];
-		}
-	}
+var arg = conf.checkArgv( process.argv);
 
-	return options;
-}
-
-var defaultConf = {
-	"conf" : process.env.HOME + '/HOME/conf/proc.json'
-};
-
-var procConf = {};
-
-var arg = check_argv( process.argv, defaultConf);
-fs.readFile( arg['conf'], (err, data) => {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			var json = '';
-			var lines = data.toString().split('\n');
-			for( var i=0; i <  lines.length; i++) {
-				if ( lines[i].substr(0,1) != '#') json += lines[i];
-			}
-			procConf = JSON.parse(json);
-
-			ps_list( function(err, proc) {
-				if ( err) console.log(err);
-				else filter(proc);
-			});
-		}
+conf.readConf( arg, function(conf) {
+	// conf : ~/HOME/conf/proc.json에서 읽은 설정 파일 
+	// read configuration and check process status
+	
+	ps_list( function(err, proc) {
+		if ( err) console.log(err);
+		else filter(conf, proc);
 	});
- 
-function filter(proc) 
+});
+
+function filter(conf, proc) 
 {
 	const fmt = '%-8d %-20s  %2.1f  %2.1f  %s';
 	console.log( sprintf( "%-8s %-20s %4s %4s  %-s", "PID", "Name", "CPU", "MEM", "Start"));
 
 	for( var i=0; i< proc.length; i++) {
-		if ( procConf['proc'].hasOwnProperty( proc[i].name)) {
+		if ( conf['proc'].hasOwnProperty( proc[i].name)) {
 			console.log( sprintf( fmt, proc[i].pid, proc[i].name, proc[i].cpu, proc[i].mem, proc[i].start));
 		}
 	}
