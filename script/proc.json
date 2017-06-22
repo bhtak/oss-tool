@@ -1,0 +1,17 @@
+# name, run command, pattern, user, group
+{ "proc": {
+		"cassandra" : {
+			"start":"sudo service cassandra start", 
+			"stop":"sudo service cassandra stop", 
+			"pattern": "org.apache.cassandra.service.CassandraDaemon", 
+			"user":"cassand", 
+			"group":"T"},
+
+		"thingsboard" : {
+			"start": "~/t-remoteye-platform/application/target/thingsboard-1.2.3-boot.jar", 
+			"stop": "kill_pid",
+			"pattern": "java.*thingsboard", 
+			"user":"tapp", 
+			"group":"T"}
+	}
+}
