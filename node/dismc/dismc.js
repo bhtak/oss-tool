@@ -18,11 +18,11 @@ conf.readConf( arg, function(conf) {
 function match( conf, proc) 
 {
 	for( var m in conf) {
-		if ( conf[m].length > 0 ) {
+		if ( conf[m].hasOwnProperty( 'pattern') && conf[m].hasOwnProperty( 'user')) {
 			// use the regex pattern
-			var pattern = new RegExp( conf[m][1]);
-			if ( proc.user.includes(conf[m][2]) && pattern.test(proc.cmd)) {
-				// console.log("PATH:", pattern, cmd);
+			var pattern = new RegExp( conf[m]['pattern']);
+			if ( proc.user.includes(conf[m]['user']) && pattern.test(proc.cmd)) {
+				//console.log("PATH:", pattern, proc.cmd);
 				return m;
 			}
 		}
@@ -32,8 +32,8 @@ function match( conf, proc)
 
 function filter(conf, proc) 
 {
-	const fmt = '%-8d %-8s %-20s  %2.1f  %2.1f  %s';
-	console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
+	const fmt = '%-8d %-8s %-20s  %3.1f  %3.1f  %s';
+	console.log( sprintf( "%-8s %-8s %-20s %4s  %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
 	var info = {};
 
@@ -55,7 +55,7 @@ function filter(conf, proc)
 			dead ++;
 		}
 	}
-	console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
+	console.log( sprintf( "\nAlive:%d Dead:%d", alive, dead));
 }
 
 function ps_list( callback) 
