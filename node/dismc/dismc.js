@@ -15,13 +15,14 @@ conf.readConf( arg, function(conf) {
 	});
 });
 
-function hasCmd( conf, cmd) 
+function match( conf, proc) 
 {
 	for( var m in conf) {
 		if ( conf[m].length > 0 ) {
-			var path = conf[m][0];
-			if ( cmd.includes( path.substr( path.lastIndexOf('/')))) {
-				// console.log("PATH:", path.substr( path.lastIndexOf('/')+1), cmd);
+			// use the regex pattern
+			var pattern = new RegExp( conf[m][1]);
+			if ( proc.user.includes(conf[m][2]) && pattern.test(proc.cmd)) {
+				// console.log("PATH:", pattern, cmd);
 				return m;
 			}
 		}
@@ -31,30 +32,35 @@ function hasCmd( conf, cmd)
 
 function filter(conf, proc) 
 {
-	const fmt = '%-8d %-20s  %2.1f  %2.1f  %s';
-	console.log( sprintf( "%-8s %-20s %4s %4s  %-s", "PID", "Name", "CPU", "MEM", "Start"));
+	const fmt = '%-8d %-8s %-20s  %2.1f  %2.1f  %s';
+	console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
 	var info = {};
 
 	for( var i=0; i< proc.length; i++) {
-		var procName = hasCmd( conf['proc'], proc[i].cmd);
+		var procName = match( conf['proc'], proc[i]);
 		if ( procName !== false) info[procName] = proc[i];
 	}
 	
+	var alive = 0, dead = 0;
+
 	for( var m in conf['proc']) {
 		if ( info.hasOwnProperty( m)) {
 			var proc = info[m];
-			console.log( sprintf( fmt, proc.pid, m, proc.cpu, proc.mem, proc.start));
+			console.log( sprintf( fmt, proc.pid, proc.user, m, proc.cpu, proc.mem, proc.start));
+			alive ++;
 		}
 		else {
-			console.log( sprintf( "%-8s %-20s", "-", m));
+			console.log( sprintf( "%-8s %-8s %-20s", "-", "-", m));
+			dead ++;
 		}
 	}
+	console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
 }
 
 function ps_list( callback) 
 {
-	exec("ps -A -o pid,rss,vsz,pcpu,comm,start_time,size,cmd", function( err, stdout, stderr) {
+	exec("ps -A -o pid,user,vsz,pcpu,comm,start_time,size,cmd", function( err, stdout, stderr) {
 			if ( err) console.log( err);
 			else {
 				var proc = stdout.split("\n")
@@ -66,6 +72,7 @@ function ps_list( callback)
 
 					return { pid : parseInt(s[0]),
 						name : s[4],
+						user : s[1],
 						cpu : parseFloat(s[3]),
 						mem : parseInt(s[6])*1024/totalmem,
 						start: s[5], 
