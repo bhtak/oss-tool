@@ -4,7 +4,7 @@ var totalmem = require('os').totalmem();
 var conf = require('./conf')
 
 /*
- * -b <proc> : 해당 프로세스를 실행한다.
+ * -b <proc> : 해당 프로세스를 종료한다.
  */
 
 var arg = conf.checkArgv( process.argv);
@@ -14,9 +14,10 @@ conf.readConf( arg, function(conf) {
 	//
 	if ( arg.hasOwnProperty('b')) {
 		var name = arg['b'];
-		if ( conf['proc'].hasOwnProperty( name) && conf['proc'][name].hasOwnProperty('start')) {
-			var cmd = conf['proc'][name]['start'];
+		if ( conf['proc'].hasOwnProperty( name) && conf['proc'][name].hasOwnProperty('stop')) {
+			var cmd = conf['proc'][name]['stop'];
 			if ( cmd.substr(0,1) == "~") cmd = process.env.HOME + cmd.substr(1);
+			else if ( cmd == 'kill_pid') cmd += sprintf( " %s", conf['proc'][name]['pattern']);
 
 			console.log( cmd);
 		}

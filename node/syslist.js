@@ -1,8 +1,14 @@
+var fs = require('fs');
+
+var arr = process.argv[2].toString().split('=');
+var file_path = arr[1];
+
+var data = fs.readFileSync(file_path, 'utf8')
+
 var os = require('os');
-var usage = require('usage');
-var ps = require('/usr/local/bin/node_modules/ps-node');
+var usage = require('usage'); //설치x
+var ps = require('ps-node'); //설치x
 var exec = require('child_process').exec;
-var map = require('./mapping.js')
 
 function getProcessesList(){
   for(let m in map){

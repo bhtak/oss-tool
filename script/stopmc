@@ -1,4 +1,21 @@
 #!/bin/bash
 PKG=~/oss-tool/node/dismc/stopmc.js
 
-node $PKG $*
+function kill_pid
+{
+	PID=`ps -ef | grep -e $1 | grep -v grep | awk '{print $2}'`
+	if [[ $PID == "" ]]; then 
+		echo "Program not found"
+	else
+		echo "Kill PID $PID "
+		kill $PID
+	fi
+}
+
+CMD=`node $PKG $*`
+if [[ $CMD == "Error:"* ]]; then
+	echo $CMD
+else
+	echo "Run: " $CMD
+	$CMD 
+fi

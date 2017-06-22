@@ -1,8 +1,14 @@
-var map = require('./mapping.js');
+var arr = process.arg[2].toString().split('=');
+var file_path = arr[1];
+
+console.log(file_path);
+process.exit(0);
+
+var map = require(proce);
 var ps = require('ps-node');
 var spawn = require('child_process').spawn;
 
-var cmd = process.argv[2];
+var cmd = process.argv[3];
 var proc = null;
 
 if ( !(cmd == 'startmc' || cmd == 'stopmc') ) {
@@ -15,7 +21,7 @@ var cmp = 0;
 var option = (function(arg){
   if(arg.substr(0,1) == '-'){
     var opt = arg.substr(1);
-    proc = process.argv[4].toString();
+    proc = process.argv[5].toString();
     if(opt == 'b') control(map[proc]);
     else if(opt == 'g'){
       for(let m in map){
@@ -36,7 +42,7 @@ var option = (function(arg){
       };
     },2000);
   }
-})(process.argv[3].toString());
+})(process.argv[4].toString());
 
 
 
