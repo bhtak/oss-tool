@@ -15,7 +15,7 @@ function checkArgv( argv, config)
 			var opt = argv[i].substr(1).split('=');
 			if ( opt.length > 1) options[opt[0]] = opt[1];
 			else if ( argv.length > i+1) options[opt[0]] = argv[i+1];
-			else console.log( "parameter missing for option [-" + opt[0] + "]");
+			else options[opt[0]] = true;
 		}
 	}
 

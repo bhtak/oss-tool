@@ -8,7 +8,6 @@ var arg = conf.checkArgv( process.argv);
 conf.readConf( arg, function(conf) {
 	// conf : ~/HOME/conf/proc.json에서 읽은 설정 파일 
 	// read configuration and check process status
-	
 	ps_list( function(err, proc) {
 		if ( err) console.log(err);
 		else filter(conf, proc);
@@ -33,7 +32,7 @@ function match( conf, proc)
 function filter(conf, proc) 
 {
 	const fmt = '%-8d %-8s %-20s  %2.1f  %2.1f  %s';
-	console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
+	if( !arg.hasOwnProperty('t') ) console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
 	var info = {};
 
@@ -47,15 +46,19 @@ function filter(conf, proc)
 	for( var m in conf['proc']) {
 		if ( info.hasOwnProperty( m)) {
 			var proc = info[m];
-			console.log( sprintf( fmt, proc.pid, proc.user, m, proc.cpu, proc.mem, proc.start));
+			if( arg.hasOwnProperty('t') ) console.log("%s:1",m);
+			else	console.log( sprintf( fmt, proc.pid, proc.user, m, proc.cpu, proc.mem, proc.start));
+			
 			alive ++;
 		}
 		else {
-			console.log( sprintf( "%-8s %-8s %-20s", "-", "-", m));
+			if( arg.hasOwnProperty('t') )  console.log("%s:0",m);
+			else console.log( sprintf( "%-8s %-8s %-20s", "-", "-", m));
 			dead ++;
 		}
 	}
-	console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
+	if( arg.hasOwnProperty('t') ) console.log("Alive=%d,Total=%d", alive, alive+dead);
+	else console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
 }
 
 function ps_list( callback) 
