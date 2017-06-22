@@ -24,3 +24,10 @@ if [ ! -f $PROC_CONF ]; then
 	cp $HOME/$PKG/script/proc.json $PROC_CONF
 fi
 
+# update PATH in .bashrc
+CNT=`grep HOME/bin ~/.bashrc | grep PATH `
+if [[ $CNT == "" ]]; then
+	echo "Update PATH"
+	echo 'export PATH=$HOME/HOME/bin:$PATH' >> ~/.bashrc
+	. ~/.bashrc
+fi

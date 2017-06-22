@@ -4,6 +4,9 @@ PKG=~/oss-tool/node/dismc/startmc.js
 CMD=`node $PKG $*`
 if [[ $CMD == "Error:"* ]]; then
 	echo $CMD
+elif [[ $CMD == "sudo "* ]]; then
+	echo "Run: " $CMD
+	$CMD 
 else
 	echo "Run: " $CMD
 	$CMD >> /dev/null 2>&1 &
