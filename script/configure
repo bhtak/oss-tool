@@ -17,3 +17,10 @@ do
 	rm -f $HOME/HOME/bin/$t
 	ln -s $HOME/$PKG/script/$t $HOME/HOME/bin/$t
 done
+
+PROC_CONF=$HOME/HOME/conf/proc.json
+if [ ! -f $PROC_CONF ]; then
+	echo "Copy default proc.json file"
+	cp $HOME/$PKG/script/proc.json $PROC_CONF
+fi
+
