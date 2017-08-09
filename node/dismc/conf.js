@@ -1,8 +1,10 @@
 var fs = require('fs');
 
+var home = process.env.HOME;
 var defaultConf = {
-	"conf" : process.env.HOME + '/HOME/conf/proc.json',
+	  "conf" : (home =='/etc/telegraf'?'/home/tapp':home) + '/HOME/conf/proc.json',
 };
+
 
 /**
  *  check argument
