@@ -58,7 +58,7 @@ function filter(conf, proc)
 		}
 		else {
 			if( arg.hasOwnProperty('t') )  console.log("%s:0",m);
-			else console.log( sprintf( "%-8s %-8s %-20s", "-", "-", m));
+			else console.log( sprintf( fmt, "-", "-", m, "", "", ""));
 			dead ++;
 		}
 	}
