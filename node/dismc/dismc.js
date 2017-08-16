@@ -31,15 +31,20 @@ function match( conf, proc)
 
 function filter(conf, proc) 
 {
-	const fmt = '%-8d %-8s %-20s  %2.1f  %2.1f  %s';
-	if( !arg.hasOwnProperty('t') ) console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
 	var info = {};
+	var maxlen = 0;
 
 	for( var i=0; i< proc.length; i++) {
 		var procName = match( conf['proc'], proc[i]);
-		if ( procName !== false) info[procName] = proc[i];
+		if ( procName !== false) {
+			info[procName] = proc[i];
+			if ( procName.length > maxlen) maxlen = procName.length;
+		}
 	}
+
+	const fmt = '%-{len}s %-{len}s %-20s %4s %4s  %-s'.replace(/{len}/g, maxlen+1);
+	if( !arg.hasOwnProperty('t') ) console.log( sprintf( fmt, "PID", "User", "Name", "CPU", "MEM", "Start"));
 	
 	var alive = 0, dead = 0;
 
@@ -47,7 +52,7 @@ function filter(conf, proc)
 		if ( info.hasOwnProperty( m)) {
 			var proc = info[m];
 			if( arg.hasOwnProperty('t') ) console.log("%s:1",m);
-			else	console.log( sprintf( fmt, proc.pid, proc.user, m, proc.cpu, proc.mem, proc.start));
+			else	console.log( sprintf( fmt, proc.pid, proc.user, m, sprintf("%.1f", proc.cpu), sprintf("%.1f", proc.mem), proc.start));
 			
 			alive ++;
 		}
@@ -58,7 +63,7 @@ function filter(conf, proc)
 		}
 	}
 	if( arg.hasOwnProperty('t') ) console.log("Alive=%d,Total=%d", alive, alive+dead);
-	else console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
+	else console.log( sprintf( "\nAlive:%d Dead:%d", alive, dead));
 }
 
 function ps_list( callback) 
