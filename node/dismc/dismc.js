@@ -33,7 +33,7 @@ function filter(conf, proc)
 {
 
 	var info = {};
-	var maxlen = 0;
+	var maxlen = 8;	// default value
 
 	for( var i=0; i< proc.length; i++) {
 		var procName = match( conf['proc'], proc[i]);
