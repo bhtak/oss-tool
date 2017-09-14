@@ -2,4 +2,4 @@
 PKG=~/oss-tool/node/dismc/dismc.js
 
 node $PKG $*
-date +"%Y/%m/%d %X"
+echo "HA-STATUS: " `~/HOME/bin/check_master`

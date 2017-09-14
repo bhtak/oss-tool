@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+HOST=$(hostname)
+FILE=$(cat /data/keepalived/host.lock)
+
+if [ "$HOST" = "$FILE" ]; then
+	echo "MASTER"
+else
+	echo "BACKUP"
+fi
