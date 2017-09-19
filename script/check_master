@@ -1,10 +1,17 @@
 #!/usr/bin/bash
 
 HOST=$(hostname)
-FILE=$(cat /data/keepalived/host.lock)
+FILE=/data/keepalived/host.lock
 
-if [ "$HOST" = "$FILE" ]; then
-	echo "MASTER"
-else
-	echo "BACKUP"
-fi
+case "$1" in
+	-m) echo "Update HA-STATUS as Master"
+		sudo sh -c "echo $HOST > $FILE"
+		;;
+	*) if [ "$HOST" = $(cat $FILE) ]; then
+			echo "MASTER"
+		else
+			echo "BACKUP"
+		fi
+		;;
+esac
+
