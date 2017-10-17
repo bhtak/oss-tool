@@ -50,12 +50,13 @@ function ps_list( conf, callback)
 				.map( function(line) {
 					var s = line.trim().split(/\s+/);
 
+					var start = s[5].indexOf('home') > 0 ? s[6] : s[5] ;
 					return { pid : parseInt(s[0]),
 						name : s[4],
 						user : s[1],
 						cpu : parseFloat(s[3]),
 						mem : parseInt(s[6])*1024/totalmem,
-						start: s[5], 
+						start: start, 
 						cmd : s.slice(7).join(" ")};
 					});
 
