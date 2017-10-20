@@ -1,55 +1,62 @@
 var exec = require('child_process').exec;
 var sprintf = require('sprintf-js').sprintf;
 var totalmem = require('os').totalmem();
-var conf = require('./conf')
+var conf = require('./conf');
+var ps_list = require('./ps_list').ps_list;
 
 var arg = conf.checkArgv( process.argv);
 
 conf.readConf( arg, function(conf) {
 	// conf : ~/HOME/conf/proc.json에서 읽은 설정 파일 
 	// read configuration and check process status
-	ps_list( function(err, proc) {
+	
+	// -b option을 사용한 경우 
+	if ( arg.hasOwnProperty('b') && typeof conf.proc[ arg.b] === 'undefined') {
+		console.log('Undefined process:', arg.b);
+		process.exit(1);
+	}
+
+	ps_list( conf, function(err, proc) {
 		if ( err) console.log(err);
-		else filter(conf, proc);
+		else display( proc);
 	});
 });
 
-function match( conf, proc) 
+function display( info) 
 {
-	for( var m in conf) {
-		if ( conf[m].hasOwnProperty( 'pattern') && conf[m].hasOwnProperty( 'user')) {
-			// use the regex pattern
-			var pattern = new RegExp( conf[m]['pattern']);
-			if ( proc.user.includes(conf[m]['user']) && pattern.test(proc.cmd)) {
-				//console.log("PATH:", pattern, proc.cmd);
-				return m;
-			}
-		}
-	}
-	return false;
-}
-
-function filter(conf, proc) 
-{
+		// set format
 	const fmt = '%-8d %-8s %-20s  %2.1f  %2.1f  %s';
-	if( !arg.hasOwnProperty('t') ) console.log( sprintf( "%-8s %-8s %-20s %4s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
-	var info = {};
-
-	for( var i=0; i< proc.length; i++) {
-		var procName = match( conf['proc'], proc[i]);
-		if ( procName !== false) info[procName] = proc[i];
-	}
-	
 	var alive = 0, dead = 0;
 
-	for( var m in conf['proc']) {
-		if ( info.hasOwnProperty( m)) {
+	if ( arg.hasOwnProperty('b')) {
+		if ( info.hasOwnProperty( arg.b) && info[arg.b].length > 0) {
+			console.log("ALIVE:%d", info[arg.b].length);
+			process.exit(0);
+		}
+		else {
+			console.log("DEAD");
+			process.exit(1);
+		}
+
+		return;
+	}
+
+	if( !arg.hasOwnProperty('t') ) console.log( sprintf( "%-8s %-8s %-20s %5s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
+
+	for( var m in info) {
+		if ( info[m].length > 0) {
 			var proc = info[m];
-			if( arg.hasOwnProperty('t') ) console.log("%s:1",m);
-			else	console.log( sprintf( fmt, proc.pid, proc.user, m, proc.cpu, proc.mem, proc.start));
-			
-			alive ++;
+			if( arg.hasOwnProperty('t') ) {
+				console.log("%s:%d", m, proc.length);
+			}
+			else	{
+				// print all process instance
+				proc.forEach( function(p) {
+					console.log( sprintf( fmt, p.pid, p.user, m, p.cpu, p.mem, p.start));
+				});
+			}
+			alive += proc.length;
 		}
 		else {
 			if( arg.hasOwnProperty('t') )  console.log("%s:0",m);
@@ -61,28 +68,3 @@ function filter(conf, proc)
 	else console.log( sprintf( "\n%s Alive:%d Dead:%d", new Date(), alive, dead));
 }
 
-function ps_list( callback) 
-{
-	exec("ps -A -o pid,user,vsz,pcpu,comm,start_time,size,cmd", function( err, stdout, stderr) {
-			if ( err) console.log( err);
-			else {
-				var proc = stdout.split("\n")
-				.filter( function( line, index) {
-					return line && index >=1;
-					})
-				.map( function(line) {
-					var s = line.trim().split(/\s+/);
-
-					return { pid : parseInt(s[0]),
-						name : s[4],
-						user : s[1],
-						cpu : parseFloat(s[3]),
-						mem : parseInt(s[6])*1024/totalmem,
-						start: s[5], 
-						cmd : s.slice(7).join(" ")};
-					});
-
-				callback( null, proc);
-			}
-			});
-}

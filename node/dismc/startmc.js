@@ -2,6 +2,7 @@ var spawn = require('child_process').spawn;
 var sprintf = require('sprintf-js').sprintf;
 var totalmem = require('os').totalmem();
 var conf = require('./conf')
+var ps_list = require('./ps_list').ps_list;
 
 /*
  * -b <proc> : 해당 프로세스를 실행한다.
@@ -18,10 +19,18 @@ conf.readConf( arg, function(conf) {
 			var cmd = conf['proc'][name]['start'];
 			if ( cmd.substr(0,1) == "~") cmd = process.env.HOME + cmd.substr(1);
 
-			console.log( cmd);
+			ps_list( conf, function( err, list) {
+				if ( list[name].length > 0) {
+					console.log("Process '%s' already running.", name);
+					process.exit(1);
+				}
+
+				console.log( cmd);
+			});
 		}
 		else {
 			console.log( "Error: Configuration not found for " + arg['b']);
+			process.exit(1);
 		}
 	}
 	

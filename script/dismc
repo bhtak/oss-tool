@@ -2,4 +2,8 @@
 PKG=~/oss-tool/node/dismc/dismc.js
 
 node $PKG $*
-date +"%Y/%m/%d %X"
+
+CHECK_MASTER=~/HOME/bin/check_master
+if [[ -f "$CHECK_MASTER" ]]; then
+	echo "HA-STATUS: " $( $CHECK_MASTER )
+fi

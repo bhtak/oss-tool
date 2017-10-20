@@ -10,7 +10,7 @@ do
 done
 
 # link essential tools
-TOOL="dismc startmc stopmc"
+TOOL="dismc startmc stopmc check_master"
 for t in $TOOL
 do
 	echo "Link $t"
