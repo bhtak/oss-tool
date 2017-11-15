@@ -1,15 +1,21 @@
 #!/bin/bash
 PKG=~/oss-tool/node/dismc/startmc.js
+LOG=~/HOME/log/startmc.log
+
+echo `date` " startmc $*" >> $LOG
 
 CMD=`node $PKG $*`
 if [[ "$?" == "0" ]]; then
 	if [[ $CMD == "sudo "* ]]; then
 		echo "Run: " $CMD
+		echo "Run: " $CMD >> $LOG
 		$CMD 
 	else
 		echo "Run: " $CMD
+		echo "Run: " $CMD >> $LOG
 		$CMD >> /dev/null 2>&1 &
 	fi
 else
 	echo $CMD
+	echo $CMD >> $LOG
 fi
