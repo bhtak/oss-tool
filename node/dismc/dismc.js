@@ -48,7 +48,13 @@ function display( info)
 		if ( info[m].length > 0) {
 			var proc = info[m];
 			if( arg.hasOwnProperty('t') ) {
-				console.log("%s:%d", m, proc.length);
+				var mem = 0.0;
+				var cpu = 0.0;
+				proc.forEach( function(p) {
+						mem += p.mem;
+						cpu += p.cpu;
+				});
+				console.log(sprintf("%s:%d:%2.1f:%2.5f", m, proc.length, cpu,mem));
 			}
 			else	{
 				// print all process instance

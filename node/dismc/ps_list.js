@@ -45,7 +45,7 @@ function ps_list( conf, callback)
 			else {
 				var proc = stdout.split("\n")
 				.filter( function( line, index) {
-					return line && index >=1;
+					return ( line && index >=1) ? line.trim().split(/\s+/)[0] != process.pid : false;
 					})
 				.map( function(line) {
 					var s = line.trim().split(/\s+/);
