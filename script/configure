@@ -1,5 +1,5 @@
 #!/bin/bash
-DIR="HOME HOME/conf HOME/bin HOME/lib"
+DIR="HOME HOME/conf HOME/bin HOME/lib HOME/log"
 PKG="oss-tool"
 
 for d in $DIR
