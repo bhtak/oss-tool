@@ -3,7 +3,10 @@ PKG=~/oss-tool/node/dismc/dismc.js
 
 node $PKG $*
 
-CHECK_MASTER=~/HOME/bin/check_master
-if [[ -f "$CHECK_MASTER" ]]; then
-	echo "HA-STATUS: " $( $CHECK_MASTER )
+if [[ "$1" != "-l" ]]; then
+	# HA-STATUS is not displayed with '-l' option
+	CHECK_MASTER=~/HOME/bin/check_master
+	if [[ -f "$CHECK_MASTER" ]]; then
+		echo "HA-STATUS: " $( $CHECK_MASTER )
+	fi
 fi

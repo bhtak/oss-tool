@@ -15,12 +15,30 @@ function kill_pid
 	fi
 }
 
-CMD=`node $PKG $*`
-if [[ $CMD == "Error:"* ]]; then
-	echo $CMD
-	echo $CMD >> $LOG
+function stop_proc
+{
+	CMD=`node $PKG $*`
+	if [[ $CMD == "Error:"* ]]; then
+		echo $CMD
+		echo $CMD >> $LOG
+	else
+		echo "Run: " $CMD
+		echo "Run: " $CMD >> $LOG
+		$CMD 
+	fi
+}
+
+if [[ "$1" == "-a" ]]; then
+	for proc in `dismc -l`
+	do
+		stop_proc -b $proc
+	done
+elif [[ "$1" == "-r" ]]; then
+	stopmc -b $2
+	sleep 1
+	startmc -b $2
 else
-	echo "Run: " $CMD
-	echo "Run: " $CMD >> $LOG
-	$CMD 
+	stop_proc $*
 fi
+
+

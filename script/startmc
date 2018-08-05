@@ -4,18 +4,36 @@ LOG=~/HOME/log/startmc.log
 
 echo `date` " startmc $*" >> $LOG
 
-CMD=`node $PKG $*`
-if [[ "$?" == "0" ]]; then
-	if [[ $CMD == "sudo "* ]]; then
-		echo "Run: " $CMD
-		echo "Run: " $CMD >> $LOG
-		$CMD 
+function start_proc 
+{
+	CMD=`node $PKG $*`
+	if [[ "$?" == "0" ]]; then
+		if [[ $CMD == "sudo "* ]]; then
+			echo "Run: " $CMD
+			echo "Run: " $CMD >> $LOG
+			$CMD 
+		else
+			echo "Run: " $CMD
+			echo "Run: " $CMD >> $LOG
+			$CMD >> /dev/null 2>&1 &
+		fi
 	else
-		echo "Run: " $CMD
-		echo "Run: " $CMD >> $LOG
-		$CMD >> /dev/null 2>&1 &
+		echo $CMD
+		echo $CMD >> $LOG
 	fi
+}
+
+if [[ "$1" == "-a" ]]; then
+	for proc in `dismc -l`
+	do
+		start_proc -b $proc
+	done
+elif [[ "$1" == "-r" ]]; then
+	stopmc -b $2
+	sleep 1
+	startmc -b $2
 else
-	echo $CMD
-	echo $CMD >> $LOG
+	start_proc $*
 fi
+
+

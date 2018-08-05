@@ -41,6 +41,10 @@ function display( info)
 
 		return;
 	}
+	else if ( arg.hasOwnProperty('l')) {
+		Object.keys(info).forEach( (proc) => console.log(proc));
+		return ;
+	}
 
 	if( !arg.hasOwnProperty('t') ) console.log( sprintf( "%-8s %-8s %-20s %5s %4s  %-s", "PID", "User", "Name", "CPU", "MEM", "Start"));
 
