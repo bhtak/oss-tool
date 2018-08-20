@@ -1,5 +1,5 @@
 #!/bin/bash
-PKG=~/oss-tool/node/dismc/dismc.js
+PKG=$OSS_TOOL/node/dismc/dismc.js
 
 node $PKG $*
 

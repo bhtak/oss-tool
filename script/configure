@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR="HOME HOME/conf HOME/bin HOME/lib HOME/log"
-PKG="oss-tool"
+PKG=`pwd`
 
 for d in $DIR
 do
@@ -15,13 +15,13 @@ for t in $TOOL
 do
 	echo "Link $t"
 	rm -f $HOME/HOME/bin/$t
-	ln -s $HOME/$PKG/script/$t $HOME/HOME/bin/$t
+	ln -s $PKG/$t $HOME/HOME/bin/$t
 done
 
 PROC_CONF=$HOME/HOME/conf/proc.json
 if [ ! -f $PROC_CONF ]; then
 	echo "Copy default proc.json file"
-	cp $HOME/$PKG/script/proc.json $PROC_CONF
+	cp $PKG/proc.json $PROC_CONF
 fi
 
 # update PATH in .bashrc

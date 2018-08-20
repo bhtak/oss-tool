@@ -1,5 +1,5 @@
 #!/bin/bash
-PKG=~/oss-tool/node/dismc/stopmc.js
+PKG=$OSS_TOOL/node/dismc/stopmc.js
 LOG=~/HOME/log/stopmc.log
 
 echo `date` " stopmc $*" >> $LOG
