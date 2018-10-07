@@ -29,5 +29,7 @@ CNT=`grep HOME/bin ~/.bashrc | grep PATH `
 if [[ $CNT == "" ]]; then
 	echo "Update PATH"
 	echo 'export PATH=$HOME/HOME/bin:$PATH' >> ~/.bashrc
+	PARENT_DIR=$(dirname `pwd`)
+	echo "export OSS_TOOL=$PARENT_DIR" >> ~/.bashrc
 	. ~/.bashrc
 fi
