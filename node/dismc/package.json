@@ -1,0 +1,13 @@
+{
+  "name": "dismc",
+  "version": "0.1.0",
+  "description": "display applications",
+  "private": true,
+  "dependencies": {
+    "sprintf-js": "",
+    "child_process": ""
+  },
+  "engines": {
+    "node": "8.x.x"
+  }
+}

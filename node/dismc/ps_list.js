@@ -40,7 +40,9 @@ function filter(conf, proc)
 
 function ps_list( conf, callback) 
 {
-	exec("ps -A -o pid,user,vsz,pcpu,comm,start_time,size,cmd", function( err, stdout, stderr) {
+	exec("ps -A -o pid,user,vsz,pcpu,comm,start_time,size,cmd", 
+    {maxBuffer: 1024 * 1024},
+    function( err, stdout, stderr) {
 			if ( err) console.log( err);
 			else {
 				var proc = stdout.split("\n")
